@@ -23,6 +23,7 @@
 		C63D5725176EDC87001109DA /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C63D5709176EDC87001109DA /* CoreData.framework */; };
 		C63D572D176EDC87001109DA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C63D572B176EDC87001109DA /* InfoPlist.strings */; };
 		C63D572F176EDC87001109DA /* GymWeightTests.m in Sources */ = {isa = PBXBuildFile; fileRef = C63D572E176EDC87001109DA /* GymWeightTests.m */; };
+		C648999B178005FB00C84057 /* Outfit.m in Sources */ = {isa = PBXBuildFile; fileRef = C648999A178005FB00C84057 /* Outfit.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -56,6 +57,8 @@
 		C63D572A176EDC87001109DA /* GymWeightTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GymWeightTests-Info.plist"; sourceTree = "<group>"; };
 		C63D572C176EDC87001109DA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		C63D572E176EDC87001109DA /* GymWeightTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GymWeightTests.m; sourceTree = "<group>"; };
+		C6489999178005FB00C84057 /* Outfit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Outfit.h; sourceTree = "<group>"; };
+		C648999A178005FB00C84057 /* Outfit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Outfit.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -124,6 +127,8 @@
 				C607B022177FEDD800C57BA1 /* GymWeightViewController.m */,
 				C63D571A176EDC87001109DA /* Images.xcassets */,
 				C63D5717176EDC87001109DA /* GymWeight.xcdatamodeld */,
+				C6489999178005FB00C84057 /* Outfit.h */,
+				C648999A178005FB00C84057 /* Outfit.m */,
 				C63D570C176EDC87001109DA /* Supporting Files */,
 			);
 			path = GymWeight;
@@ -258,6 +263,7 @@
 				C607B027177FF20000C57BA1 /* GymWeightViewController.m in Sources */,
 				C63D5719176EDC87001109DA /* GymWeight.xcdatamodeld in Sources */,
 				C63D5712176EDC87001109DA /* main.m in Sources */,
+				C648999B178005FB00C84057 /* Outfit.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
