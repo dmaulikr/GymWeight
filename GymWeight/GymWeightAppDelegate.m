@@ -18,6 +18,8 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // initiate GymWeightViewController
+    
+    // 바뀌어랑
 
     GymWeightViewController *rootViewController = [[GymWeightViewController alloc] initWithStyle:UITableViewStylePlain];
     
