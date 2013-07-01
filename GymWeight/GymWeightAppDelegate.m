@@ -32,6 +32,7 @@
     
 
     GymWeightViewController *rootViewController = [[GymWeightViewController alloc] initWithStyle:UITableViewStylePlain];
+    rootViewController.managedObjectContext = self.managedObjectContext;
     
     // initiate and set up UINavigationController
     
