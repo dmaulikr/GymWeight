@@ -20,6 +20,17 @@
     // initiate GymWeightViewController
     
     // 바뀌어랑
+    
+    NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
+    
+    if ([userDefault valueForKey:@"init"]) {
+        NSLog(@"먼가 있다");
+    } else {
+        NSLog(@"암꺼두 없다 그러므로 저장하겠다.");
+        [userDefault setInteger:(NSInteger)1 forKey:@"init"];
+        [userDefault synchronize];
+    }
+    
 
     GymWeightViewController *rootViewController = [[GymWeightViewController alloc] initWithStyle:UITableViewStylePlain];
     

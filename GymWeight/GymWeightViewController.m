@@ -16,6 +16,14 @@
 
 - (void) addGym
 {
+    NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
+    if ([userDefault integerForKey:@"init"]) {
+        NSLog(@"먼가 있으니 그거 날려버리겠다.");
+        [userDefault removeObjectForKey:@"init"];
+        [userDefault synchronize];
+    } else {
+        NSLog(@"아무것도 없어서 할게 없당...");
+    }
     return;
 }
 
