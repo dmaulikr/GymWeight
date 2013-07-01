@@ -8,6 +8,7 @@
 
 #import "GymWeightAppDelegate.h"
 #import "GymWeightViewController.h"
+#import "Outfit.h"
 
 @implementation GymWeightAppDelegate
 
@@ -24,11 +25,9 @@
     NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
     
     if ([userDefault valueForKey:@"init"]) {
-        NSLog(@"먼가 있다");
+        [self logPopulatedData];
     } else {
-        NSLog(@"암꺼두 없다 그러므로 저장하겠다.");
-        [userDefault setInteger:(NSInteger)1 forKey:@"init"];
-        [userDefault synchronize];
+        [self populateDefault];
     }
     
 
@@ -89,6 +88,57 @@
     }
 }
 
+-(void)populateDefault
+{
+    NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
+    
+    NSLog(@"암꺼두 없다 데이터 셋업을 하겠다.");
+    
+    // 일단 엔티티 셋업
+    NSArray *nameArray = @[@"체스트 프레스", @"버터플라이", @"케이블 크로스 오버", @"벤치 프레스", @"랫 풀 다운", @"하이폴리", @"업도미널", @"숄더 프레스", @"케이블 크로스 오버", @"레그 익스텐션" ];
+    
+    for (NSString *name in nameArray) {
+        
+        // 모델 하나 생성
+        Outfit *outfit = (Outfit *)[NSEntityDescription insertNewObjectForEntityForName:@"Outfit"
+                                                                 inManagedObjectContext:self.managedObjectContext];
+        // 모델 셋업
+        [outfit setWeight:@(0)];
+        [outfit setName:name];
+    }
+    
+    // 이제 context 에 저장.
+    NSError *error = nil;
+    
+    if (![self.managedObjectContext save:&error]) {
+        // handle error
+        NSLog(@"먼가 잘못됨..");
+    } else {
+        NSLog(@"모델들 성공적으로 추가");
+    }
+    
+    
+    [userDefault setInteger:(NSInteger)1 forKey:@"init"];
+    [userDefault synchronize];
+}
+
+-(void)logPopulatedData
+{
+    NSLog(@"먼가 있다");
+    NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"Outfit"];
+    NSError *error = nil;
+    NSArray *resultArray = [self.managedObjectContext executeFetchRequest: request error:&error];
+    
+    if (resultArray == nil) {
+        // handle error
+    }
+    
+    for (Outfit *outfit in resultArray) {
+        NSLog(@"이 운동기구의 이름은 %@ 이고, 무게는 현재 %@이다.", outfit.name, outfit.weight );
+        
+    }
+
+}
 #pragma mark - Core Data stack
 
 // Returns the managed object context for the application.
