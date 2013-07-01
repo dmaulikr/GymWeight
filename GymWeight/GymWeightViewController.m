@@ -7,6 +7,7 @@
 //
 
 #import "GymWeightViewController.h"
+#import "Outfit.h"
 
 @interface GymWeightViewController ()
 
@@ -52,6 +53,15 @@
     self.navigationItem.leftBarButtonItem= self.editButtonItem;
     self.navigationItem.rightBarButtonItem = self.addButton;
     
+    NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"Outfit"];
+    NSError *error = nil;
+     NSMutableArray *mutableFetchResults = [[self.managedObjectContext executeFetchRequest:request error:&error] mutableCopy];
+    
+    if (mutableFetchResults == nil) {
+        // error handling
+    }
+    
+    self.outfitsArray = mutableFetchResults;
 }
 
 - (void)didReceiveMemoryWarning
@@ -64,24 +74,32 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-#warning Potentially incomplete method implementation.
     // Return the number of sections.
     return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-#warning Incomplete method implementation.
     // Return the number of rows in the section.
-    return 0;
+    return [self.outfitsArray count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *CellIdentifier = @"Cell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     
-    // Configure the cell...
+    //UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    if (cell == nil) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
+    }
+    
+    Outfit *outfit = (Outfit *)[self.outfitsArray objectAtIndex:indexPath.row];
+    
+    cell.textLabel.text = outfit.name;
+    cell.detailTextLabel.text = [NSString stringWithFormat:@"%@kg", outfit.weight];
+    
+    
     
     return cell;
 }
