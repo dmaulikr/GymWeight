@@ -96,12 +96,21 @@
     
     Outfit *outfit = (Outfit *)[self.outfitsArray objectAtIndex:indexPath.row];
     
-    cell.textLabel.text = outfit.name;
-    cell.detailTextLabel.text = [NSString stringWithFormat:@"%@kg", outfit.weight];
+    cell.textLabel.text = [NSString stringWithFormat:@"%@lb", outfit.weight];
+    cell.textLabel.font = [UIFont fontWithName:@"HelveticaNeue-UltraLight" size:47];
+    cell.textLabel.textColor = [UIColor colorWithRed:.4 green:.4 blue:.4 alpha:1.0];
     
+    cell.detailTextLabel.text = outfit.name;
+    cell.detailTextLabel.font = [cell.detailTextLabel.font fontWithSize:14];
+
     
     
     return cell;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 93.0;
 }
 
 /*
