@@ -11,9 +11,6 @@
 
 @interface GymWeightViewController ()
 
-@property (nonatomic, assign) NSInteger cellIndex;
-@property (nonatomic, strong) NSNumber *cellOriginalValue;
-
 -(void)handleGesture:(UIPanGestureRecognizer *)gestureRecognizer;
 
 @end
@@ -67,16 +64,17 @@
     }
     
     self.outfitsArray = mutableFetchResults;
+    self.outfitsTempWeight = [self.outfitsArray valueForKeyPath:@"weight"];
     
-    // init cell index
+    self.tableView.allowsSelection = NO;
     
-    self.cellIndex = 0;
     
     // gesture recognizer
     
     UIPanGestureRecognizer *recognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleGesture:)];
     [recognizer setMaximumNumberOfTouches:1];
-    [self.view addGestureRecognizer:recognizer];
+    [recognizer setDelegate:self];
+    [self.tableView addGestureRecognizer:recognizer];
 }
 
 - (void)handleGesture:(UIPanGestureRecognizer *)gestureRecognizer
@@ -86,28 +84,34 @@
     CGPoint swipeLocation = [gestureRecognizer locationInView:self.tableView];
     NSIndexPath *swipedIndexPath = [self.tableView indexPathForRowAtPoint:swipeLocation];
     //UITableViewCell* swipedCell = [self.tableView cellForRowAtIndexPath:swipedIndexPath];
-    Outfit *outfit = [self.outfitsArray objectAtIndex:self.cellIndex];
+    Outfit *outfit = [self.outfitsArray objectAtIndex:swipedIndexPath.row];
     
-    // 어느 부분을 조작할 것인지 시작할떄 정해준다.
-    if (gestureRecognizer.state == UIGestureRecognizerStateBegan) {
-        self.cellIndex = swipedIndexPath.row;
-        // 오리지널 밸류 셋업
-        self.cellOriginalValue = outfit.weight;
-        
-    }
-
     
     
     if (gestureRecognizer.state == UIGestureRecognizerStateChanged) {
         CGPoint translationInView = [gestureRecognizer translationInView:self.tableView];
-        NSLog(@"%ld번째 셀, x좌표 이동은 %f, y좌표 이동은 %f", (long)self.cellIndex, translationInView.x, translationInView.y);
+        // NSLog(@"%ld번째 셀, x좌표 이동은 %f, y좌표 이동은 %f", (long)self.cellIndex, translationInView.x, translationInView.y);
         // 일단 어레이 원래 값은 계속 보존되어야 해.
         // 그리고 어레이에서 해당 값을 가져오장.
         
         // 계산값 설정
-        NSInteger computedValue = [self.cellOriginalValue integerValue] + translationInView.x;
+        
+        // 스텝화 시킨 x 분할값 넣기
+        NSInteger translationXStep = floor(translationInView.x / 20) * 5;
+        // 너무 한번에 확 안늘게 하기
+        
+        
+        
+        //NSInteger computedValue = [outfit.weight integerValue] + translationXStep;
+    
+        NSInteger computedValue =  [[self.outfitsTempWeight objectAtIndex:swipedIndexPath.row] integerValue] + translationXStep;
+        
+        //NSLog(@"%ld", (long)computedValue);
+        if (computedValue < 0) {
+            computedValue = 0;
+        }
         // 값에 따라 해당 모델을 바꿨땅.
-        [outfit setWeight:[NSNumber numberWithFloat:computedValue]];
+        [outfit setWeight:[NSNumber numberWithInt:computedValue]];
         
         // 뷰 리프레쉬
         [self.tableView reloadRowsAtIndexPaths:@[swipedIndexPath] withRowAnimation:UITableViewRowAnimationNone];
@@ -117,9 +121,31 @@
     }
     
     
-    if (gestureRecognizer.state == UIGestureRecognizerStateBegan) {
+    if (gestureRecognizer.state == UIGestureRecognizerStateEnded) {
+        self.outfitsTempWeight = [self.outfitsArray valueForKeyPath:@"weight"];
+        
+        NSError *error = nil;
+        
+        if (![self.managedObjectContext save:&error]) {
+            NSLog(@"save error!");
+        }
         
     }
+}
+
+- (BOOL) gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
+{
+    UIView *cell = [gestureRecognizer view];
+    UIPanGestureRecognizer *panGestureRecognizer = (UIPanGestureRecognizer *)gestureRecognizer;
+    CGPoint translation = [panGestureRecognizer translationInView:[cell superview]];
+    
+    // Check for horizontal gesture
+    if (fabsf(translation.x) > fabsf(translation.y))
+    {
+        return YES;
+    }
+    
+    return NO;
 }
 
 - (void)didReceiveMemoryWarning
@@ -160,6 +186,11 @@
     
     cell.detailTextLabel.text = outfit.name;
     cell.detailTextLabel.font = [cell.detailTextLabel.font fontWithSize:14];
+    
+//    UIPanGestureRecognizer *recognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleGesture:)];
+//    [recognizer setMaximumNumberOfTouches:1];
+//    [recognizer setDelegate:self];
+//    [cell addGestureRecognizer:recognizer];
 
     
     

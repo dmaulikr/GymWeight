@@ -8,11 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
-@interface GymWeightViewController : UITableViewController
+@interface GymWeightViewController : UITableViewController <UIGestureRecognizerDelegate>
 
 @property (nonatomic, strong) UIBarButtonItem *addButton;
 @property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, strong) NSMutableArray *outfitsArray;
+@property (nonatomic, strong) NSMutableArray *outfitsTempWeight;
 
 -(void) addGym;
 @end
