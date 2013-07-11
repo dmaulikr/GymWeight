@@ -11,6 +11,11 @@
 
 @interface GymWeightViewController ()
 
+@property (nonatomic, assign) NSInteger cellIndex;
+@property (nonatomic, strong) NSNumber *cellOriginalValue;
+
+-(void)handleGesture:(UIPanGestureRecognizer *)gestureRecognizer;
+
 @end
 
 @implementation GymWeightViewController
@@ -62,6 +67,59 @@
     }
     
     self.outfitsArray = mutableFetchResults;
+    
+    // init cell index
+    
+    self.cellIndex = 0;
+    
+    // gesture recognizer
+    
+    UIPanGestureRecognizer *recognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleGesture:)];
+    [recognizer setMaximumNumberOfTouches:1];
+    [self.view addGestureRecognizer:recognizer];
+}
+
+- (void)handleGesture:(UIPanGestureRecognizer *)gestureRecognizer
+{
+    //NSLog(@"did swipe called %@", gestureRecognizer);
+    
+    CGPoint swipeLocation = [gestureRecognizer locationInView:self.tableView];
+    NSIndexPath *swipedIndexPath = [self.tableView indexPathForRowAtPoint:swipeLocation];
+    //UITableViewCell* swipedCell = [self.tableView cellForRowAtIndexPath:swipedIndexPath];
+    Outfit *outfit = [self.outfitsArray objectAtIndex:self.cellIndex];
+    
+    // 어느 부분을 조작할 것인지 시작할떄 정해준다.
+    if (gestureRecognizer.state == UIGestureRecognizerStateBegan) {
+        self.cellIndex = swipedIndexPath.row;
+        // 오리지널 밸류 셋업
+        self.cellOriginalValue = outfit.weight;
+        
+    }
+
+    
+    
+    if (gestureRecognizer.state == UIGestureRecognizerStateChanged) {
+        CGPoint translationInView = [gestureRecognizer translationInView:self.tableView];
+        NSLog(@"%ld번째 셀, x좌표 이동은 %f, y좌표 이동은 %f", (long)self.cellIndex, translationInView.x, translationInView.y);
+        // 일단 어레이 원래 값은 계속 보존되어야 해.
+        // 그리고 어레이에서 해당 값을 가져오장.
+        
+        // 계산값 설정
+        NSInteger computedValue = [self.cellOriginalValue integerValue] + translationInView.x;
+        // 값에 따라 해당 모델을 바꿨땅.
+        [outfit setWeight:[NSNumber numberWithFloat:computedValue]];
+        
+        // 뷰 리프레쉬
+        [self.tableView reloadRowsAtIndexPaths:@[swipedIndexPath] withRowAnimation:UITableViewRowAnimationNone];
+        
+        //NSLog(@"%@",outfit.weight);
+        
+    }
+    
+    
+    if (gestureRecognizer.state == UIGestureRecognizerStateBegan) {
+        
+    }
 }
 
 - (void)didReceiveMemoryWarning
