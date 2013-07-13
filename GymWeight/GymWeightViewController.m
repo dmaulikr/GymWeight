@@ -10,6 +10,7 @@
 #import "Outfit.h"
 
 @interface GymWeightViewController ()
+@property (nonatomic, assign) NSInteger cellIndex;
 
 -(void)handleGesture:(UIPanGestureRecognizer *)gestureRecognizer;
 
@@ -67,7 +68,7 @@
     self.outfitsTempWeight = [self.outfitsArray valueForKeyPath:@"weight"];
     
     self.tableView.allowsSelection = NO;
-    
+    self.cellIndex = 0;
     
     // gesture recognizer
     
@@ -84,7 +85,12 @@
     CGPoint swipeLocation = [gestureRecognizer locationInView:self.tableView];
     NSIndexPath *swipedIndexPath = [self.tableView indexPathForRowAtPoint:swipeLocation];
     //UITableViewCell* swipedCell = [self.tableView cellForRowAtIndexPath:swipedIndexPath];
-    Outfit *outfit = [self.outfitsArray objectAtIndex:swipedIndexPath.row];
+    
+    if (gestureRecognizer.state == UIGestureRecognizerStateBegan) {
+        self.cellIndex = swipedIndexPath.row;
+    }
+    
+    Outfit *outfit = [self.outfitsArray objectAtIndex:self.cellIndex];
     
     
     
