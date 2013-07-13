@@ -13,7 +13,6 @@
 @property (nonatomic, strong) UIBarButtonItem *addButton;
 @property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, strong) NSMutableArray *outfitsArray;
-@property (nonatomic, strong) NSMutableArray *outfitsTempWeight;
 
 -(void) addGym;
 @end
