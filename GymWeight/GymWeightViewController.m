@@ -136,7 +136,7 @@
         if (cell == nil) {
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:PickerCellIdentifier];
         }
-        
+        [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
         [cell addSubview:self.pickerView];
         
         
@@ -257,7 +257,8 @@
     cellRect = [self.tableView convertRect:cellRect toView:self.tableView.superview];
     BOOL completelyVisible = CGRectContainsRect(self.tableView.frame, cellRect);
     if (!completelyVisible) {
-        [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+        NSIndexPath *newIndexPath = [NSIndexPath indexPathForRow:indexPath.row -1 inSection:0];
+        [self.tableView scrollToRowAtIndexPath:newIndexPath atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
     }
 }
 
