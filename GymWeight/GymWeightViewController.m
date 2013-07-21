@@ -131,8 +131,8 @@
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:PickerCellIdentifier];
         }
         
+        [cell addSubview:self.pickerView];
         
-        cell.textLabel.text = @"이게 보였음 좋겠땅 헤헤";
         
         
         return cell;
@@ -145,12 +145,19 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    id arrayItem = [self.outfitsArray objectAtIndex:indexPath.row];
+    
+    if (![arrayItem isKindOfClass:[Outfit class]]) {
+        return 216.0;
+    }
+    
     return 93.0;
-
+    
+    
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSLog(@"현재 인덱스 패스는 %d", indexPath.row);
+    //NSLog(@"현재 인덱스 패스는 %d", indexPath.row);
     id arrayItem = [self.outfitsArray objectAtIndex:indexPath.row];
     
     if ([arrayItem isKindOfClass:[Outfit class]]) {
@@ -222,7 +229,7 @@
         
         
     }
-    NSLog(@"현재 selectedIndex 는 %d", self.selectedIndex);
+    //NSLog(@"현재 selectedIndex 는 %d", self.selectedIndex);
 }
 
 - (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
