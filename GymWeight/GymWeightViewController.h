@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface GymWeightViewController : UITableViewController <UIGestureRecognizerDelegate>
+@interface GymWeightViewController : UITableViewController
 
 @property (nonatomic, strong) UIBarButtonItem *addButton;
 @property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
