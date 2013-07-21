@@ -220,6 +220,9 @@
                 }
                 
                 [self.pickerView selectRow:[self getCurrentRow:self.selectedIndex] inComponent:0 animated:NO];
+                
+                // 디텍팅
+                [self scrollWithIndexPath:nextIndexPath];
             }
 
         } else {
@@ -235,6 +238,9 @@
             
             self.selectedIndex = indexPath.row;
             [self.pickerView selectRow:[self getCurrentRow:self.selectedIndex] inComponent:0 animated:NO];
+            
+            // 디텍팅
+            [self scrollWithIndexPath:nextIndexPath];
         }
         
         
@@ -243,6 +249,16 @@
         [self.tableView deselectRowAtIndexPath:indexPath animated:NO];
     }
     //NSLog(@"현재 selectedIndex 는 %d", self.selectedIndex);
+}
+
+- (void) scrollWithIndexPath:(NSIndexPath *)indexPath
+{
+    CGRect cellRect = [self.tableView rectForRowAtIndexPath:indexPath];
+    cellRect = [self.tableView convertRect:cellRect toView:self.tableView.superview];
+    BOOL completelyVisible = CGRectContainsRect(self.tableView.frame, cellRect);
+    if (!completelyVisible) {
+        [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+    }
 }
 
 - (NSInteger) getCurrentRow:(NSInteger)index
