@@ -12,7 +12,7 @@
 @interface GymWeightViewController () <UIPickerViewDelegate, UIPickerViewDataSource>
 
 @property (nonatomic, strong) UIPickerView *pickerView;
-@property (nonatomic, strong) NSArray *pickerViewArray;
+@property (nonatomic, strong) NSMutableArray *pickerViewArray;
 @property (nonatomic, assign) NSInteger selectedIndex;
 
 @end
@@ -70,7 +70,13 @@
     
     //self.tableView.allowsSelection = NO;
     
-    self.pickerViewArray = @[[NSNumber numberWithInteger:0],[NSNumber numberWithInteger:5],[NSNumber numberWithInteger:10],[NSNumber numberWithInteger:15],[NSNumber numberWithInteger:20],[NSNumber numberWithInteger:25],[NSNumber numberWithInteger:30],[NSNumber numberWithInteger:35]];
+    
+    self.pickerViewArray = [[NSMutableArray alloc] init];
+    
+    for (int i = 0; i < 31; i++) {
+        [self.pickerViewArray addObject:[NSNumber numberWithInt: i * 5]];
+        
+    }
     
     self.pickerView = [[UIPickerView alloc] initWithFrame:CGRectZero];
     self.pickerView.delegate = self;
@@ -177,6 +183,7 @@
                 
                 [self.tableView beginUpdates];
                 [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:willBeDeletedIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+                [tableView deselectRowAtIndexPath:indexPath animated:NO];
                 [self.tableView endUpdates];
                 
                 self.selectedIndex = -1;
@@ -211,6 +218,8 @@
                 } else {
                     self.selectedIndex = indexPath.row;
                 }
+                
+                [self.pickerView selectRow:[self getCurrentRow:self.selectedIndex] inComponent:0 animated:NO];
             }
 
         } else {
@@ -225,11 +234,25 @@
             [self.tableView endUpdates];
             
             self.selectedIndex = indexPath.row;
+            [self.pickerView selectRow:[self getCurrentRow:self.selectedIndex] inComponent:0 animated:NO];
         }
         
         
+    } else {
+        
+        [self.tableView deselectRowAtIndexPath:indexPath animated:NO];
     }
     //NSLog(@"현재 selectedIndex 는 %d", self.selectedIndex);
+}
+
+- (NSInteger) getCurrentRow:(NSInteger)index
+{
+    //일단 outfit을 가져온다. 무게도 가져온다.
+    Outfit *outfit = (Outfit *)[self.outfitsArray objectAtIndex:index];
+    NSInteger weight = [[outfit weight] integerValue];
+    
+    // 무게를 통해서 나눈다.
+    return weight / 5;
 }
 
 - (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
@@ -245,6 +268,35 @@
 - (NSString *)pickerView:(UIPickerView *)thePickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component {
     NSNumber *number = [self.pickerViewArray objectAtIndex:row];
     return [NSString stringWithFormat:@"%@ lb",number];//Or, your suitable title; like Choice-a, etc.
+}
+
+- (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
+    
+    // 교체할 숫자 받기
+    NSNumber *number = [self.pickerViewArray objectAtIndex:row];
+    //NSLog(@"으앙 %d", [number integerValue]);
+    
+    // 오브젝트 받기
+    //NSLog(@"%d", self.selectedIndex);
+    Outfit *outfit = (Outfit *)[self.outfitsArray objectAtIndex:self.selectedIndex];
+    
+    //NSLog(@"%@", [outfit name]);
+    [outfit setWeight:number];
+    
+    NSError *error;
+    
+    if (![self.managedObjectContext save:&error]) {
+        // Handle error
+    }
+    
+    // refresh cell
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:self.selectedIndex inSection:0];
+    [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
+    [self.tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
+    
+    
+    
+    
 }
 
 /*
